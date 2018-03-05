@@ -1,0 +1,56 @@
+<div class="jumbotron text-center">
+
+    <h1>Game Page</h1>
+
+    <p>{{ game.message }}</p>
+    <div class="container">
+
+        <!-- Replace firefox window.onload func -->
+        <div ng-init="game.load()"></div>
+        
+
+        <div class="row">
+            <div class="form-group col-xs-4">                
+                <button id="btnStart" ng-click="game.reset()">Lets play a game</button>                
+            </div>
+            <div class="form-group col-xs-4">                
+                    <button id="btnForward" ng-click="game.forward()">Forward</button>                
+            </div>
+            <div class="form-group col-xs-4">                
+                    <button id="btnBack" ng-click="game.back()">Back</button>                
+            </div>            
+        </div>
+        <div class="row">
+            <div class="form-group col-xs-4">
+
+            </div>
+            <div class="form-group col-xs-4">                
+                <button id="btnLeft" ng-click="game.left()">Left</button>                
+            </div>
+            <div class="form-group col-xs-4">                    
+                <button id="btnRight" ng-click="game.right()">Right</button>                    
+            </div>
+        </div>
+        <br />
+
+        <div class="row">
+            <div class="col-xs-10">
+                <canvas id="myCanvas" width=700 height=500 style="border: 1px gray solid;"></canvas>
+            </div>
+            <div class="col-xs-2">
+                    <img src="/app/img/homer.png" style="padding-top:55px;padding-right:10px;" id="homer" alt="Homer">
+            </div>
+        </div>
+        <br/>
+        <div class="row">
+            <div class="col-xs-4">
+                <button ng-click="game.load()">TEST</button>
+            </div>
+            <div class="col-xs-8">
+                <!-- <img src="/img/donut.png"> -->
+                <label>eeeeeeeeeeeee</label>
+                
+            </div>
+        </div>
+    </div>
+</div>
