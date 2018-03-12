@@ -65,7 +65,7 @@ module.exports = function(app, express) {
 		console.log('Somebody just came to our app!');
 
 	  // check header or url parameters or post parameters for token
-	  var token = req.body.token || req.query.token || req.headers['x-access-token'];
+	   var token = req.body.token || req.query.token || req.headers['x-access-token'];
 
 	  // decode token
 	  if (token) {
@@ -82,15 +82,16 @@ module.exports = function(app, express) {
 	  } else {
 
 	    // if there is no token
-	    // return an HTTP response of 403 (access forbidden) and an error message
-   	 	return res.status(403).send({ 
-   	 		success: false, 
-   	 		message: 'No token provided.' 
-   	 	});
-	    
+			// return an HTTP response of 403 (access forbidden) and an error message
+			next();
+   	 	// return res.status(403).send({ 
+   	 	// 	success: false, 
+   	 	// 	message: 'No token provided.' 
+   	 	// });
+
 	  }
 
-	  next(); // make sure we go to the next routes and don't stop here
+		  // make sure we go to the next routes and don't stop here
 	});
 
 	// test route to make sure everything is working 
@@ -105,7 +106,7 @@ module.exports = function(app, express) {
 
 		// create a user (accessed at POST http://localhost:8080/users)
 		.post(function(req, res) {
-			
+			console.log("users accessed");
 			var user = new User();		// create a new instance of the User model
 			user.name = req.body.name;  // set the users name (comes from the request)
 			user.username = req.body.username;  // set the users username (comes from the request)
