@@ -49,7 +49,13 @@ angular.module('routerRoutes', ['ngRoute', 'loginService'])
             templateUrl : 'app/views/pages/login.html',
             controller  : 'loginController',
             controllerAs: 'login'
-        });
+        })
+
+        .when('/register', {
+            templateUrl : 'app/views/pages/register.html',
+            controller  : 'registerController',
+            controllerAs: 'register'            
+        })
 
     $locationProvider.html5Mode(true);
 });

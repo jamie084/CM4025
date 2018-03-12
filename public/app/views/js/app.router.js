@@ -41,4 +41,13 @@ angular.module('routerApp', ['routerRoutes', 'loginService',  'gameService', 'ng
 	var vm = this;
 
     	vm.message = 'Contact us! JK. This is just a demo.';
+})
+
+// contact page controller
+.controller('registerController', function() {
+
+	var vm = this;
+
+		vm.message = 'register contrll';
+		
 });
