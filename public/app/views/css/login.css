@@ -78,6 +78,7 @@
     box-sizing: border-box;
 }
 
+.form-signin #inputName,
 .form-signin #inputEmail,
 .form-signin #inputPassword {
     direction: ltr;
