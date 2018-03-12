@@ -1,0 +1,25 @@
+<link rel="stylesheet" href="/app/views/css/login.css">
+
+
+<div class="container" ng-app="routerApp" ng-controller="regController as main">
+        <div class="alert alert-danger" runat ="server" id="modalEditError" ng-show="main.error" visible ="false">                
+                <strong>{{ main.message }}</strong>
+        </div>
+        
+        <div class="card card-container">
+            <h3>Registration form: </h3>
+            <form class="form-signin" ng-submit="main.btn_RegisterOnClientClick()" >
+              
+                <input type="username" id="inputName" class="form-control" placeholder="Name" ng-model="main.credentials.name" required>
+                <input type="username" name="User name" id="inputEmail" class="form-control" placeholder="User name" ng-model="main.credentials.username" autocomplete="on" required autofocus>
+                <input type="password" id="inputPassword" class="form-control" placeholder="Password" ng-model="main.credentials.password" required>
+                <!-- <div id="remember" class="checkbox">
+                    <label>
+                        <input type="checkbox" value="remember-me"> Remember me
+                    </label>
+                </div> -->
+                <button class="btn btn-lg btn-primary btn-block btn-signin" type="submit">Register</button>                            
+            </form><!-- /form -->
+            
+        </div><!-- /card-container -->
+    </div><!-- /container -->
