@@ -1,4 +1,5 @@
 var User       = require('../models/user');
+var Game 			 = require('../models/game')
 var jwt        = require('jsonwebtoken');
 var config     = require('../../config');
 
@@ -137,6 +138,94 @@ module.exports = function(app, express) {
 			});
 		});
 
+	// on routes that end in /users
+	// ----------------------------------------------------
+	apiRouter.route('/games')
+
+		// create a user (accessed at POST http://localhost:8080/users)
+		.post(function(req, res) {
+			console.log("games accessed");
+			var game = new Game();		// create a new instance of the User model
+		//	game.id = req.body.id;  // set the users name (comes from the request)
+			game.name = req.body.name;  // set the users username (comes from the request)
+			game.players = req.body.players;  // set the users password (comes from the request)
+			game.map = req.body.map;
+
+			game.save(function(err) {
+				if (err) {
+					// duplicate entry
+					if (err.code == 11000) 
+						return res.json({ success: false, message: 'A game with that name already exists. '});
+					else 
+						return res.send(err);
+				}
+
+				// return a message
+				res.json({ message: 'map created!' });
+			});
+
+		})
+
+		// get all the users (accessed at GET http://localhost:8080/api/games)
+		.get(function(req, res) {
+			game.find(function(err, games) {
+				if (err) res.send(err);
+
+				// return the users
+				res.json(games);
+			});
+		});
+
+	// on routes that end in /users/:user_id
+	// ----------------------------------------------------
+	apiRouter.route('/games/:game_id')
+
+		// get the user with that id
+		.get(function(req, res) {
+			Game.findById(req.params.game_id, function(err, game) {
+				if (err) res.send(err);
+
+				// return that user
+				res.json(game);
+			});
+		})
+
+		// update the user with this id
+		.put(function(req, res) {
+			Game.findById(req.params.game_id, function(err, game) {
+
+				if (err) res.send(err);
+				console.log("request body" + game.name + req.body.players + game.map)
+				// set the new user information if it exists in the request
+				if (req.body.name) game.name = req.body.name;
+				if (req.body.players) game.players = req.body.players;
+			if (req.body.map) game.map = req.body.map;
+
+				// save the user
+				game.save(function(err) {
+					if (err) res.send(err);
+
+					// return a message
+					res.json({ message: 'User updated!' });
+				});
+
+			});
+		})
+
+		// delete the user with this id
+		.delete(function(req, res) {
+			Game.remove({
+				_id: req.params.game_id
+			}, function(err, game) {
+				if (err) res.send(err);
+
+				res.json({ message: 'Successfully deleted' });
+			});
+		});
+
+	
+
+
 	// on routes that end in /users/:user_id
 	// ----------------------------------------------------
 	apiRouter.route('/users/:user_id')
@@ -186,3 +275,4 @@ module.exports = function(app, express) {
 
 	return apiRouter;
 };
+
