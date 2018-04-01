@@ -77,6 +77,7 @@ return authTokenFactory;
 	authTokenFactory.getToken = function() {
 	return $window.localStorage.getItem('token');
 	};
+
 	// function to set token or clear token
 	// if a token is passed, set the token
 	// if there is no token, clear it from local storage
@@ -89,25 +90,29 @@ return authTokenFactory;
 	return authTokenFactory;
 	})
 
+
 	// ===================================================
 // auth factory to login and get information
 // inject $http for communicating with the API
 // inject $q to return promise objects
 // inject AuthToken to manage tokens
 // ===================================================
-.factory('Auth', function($http, $q, AuthToken) {
+.factory('Auth', function($window, $http, $q, AuthToken) {
 	// create auth factory object
 	var authFactory = {};
+	var usernameLocal;
+	var userData ={};
 	
 	// log a user in
 	authFactory.login = function(username, password) {
 	// return the promise object and its data
+	usernameLocal = username;
 	return $http.post('/api/authenticate', {
 	username: username,
 	password: password
 	})
 	.success(function(data) {
-	 AuthToken.setToken(data.token);	
+	 AuthToken.setToken(data.token);		
 	return data;
 	});
 	};
@@ -116,6 +121,7 @@ return authTokenFactory;
 	// clear the token
 	AuthToken.setToken();
 	};
+
 	// check if a user is logged in
 	// checks if there is a local token
 	authFactory.isLoggedIn = function() {
@@ -124,13 +130,12 @@ return authTokenFactory;
 	else
 	return false;
 	};
+
+	authFactory.getToken = function() {
+		return AuthToken.getToken();
+	}
 	// get the logged in user
-authFactory.getUser = function() {
-	if (AuthToken.getToken())
-	return $http.get('/api/me');
-	else
-	return $q.reject({ message: 'User has no token.' });
-	};
+
 	// return auth factory object
 	return authFactory;
 	}) 
@@ -164,18 +169,4 @@ return interceptorFactory;
 });
 
 
-
-// .controller('logcontrol', function() {
-
-// 	// bind this to vm (view-model)
-// 	var vm = this;
-
-// 	// define variables and objects on this
-// 	// this lets them be available to our views
-
-// 	// define a basic variable
-// 	vm.message = 'Hey there! Come and see how good I look!';
-
-// })
-// ; 
 
