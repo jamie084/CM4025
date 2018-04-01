@@ -13,3 +13,9 @@ body 		{ padding-top:50px; }
   -moz-animation:zoomOutDown 0.5s both ease-in; 
 	animation:zoomOutDown 0.5s both ease-in; 
 }
+
+/* https://github.com/twbs/bootstrap/issues/15229 */
+.modal-open {
+  margin-right: 20% !important;
+  
+}
