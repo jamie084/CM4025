@@ -2,7 +2,7 @@
 angular.module('gameService', ['loginService'])
 // contact page controller
 .controller('gameController', function($http, user, Auth) {
-    this.message = 'Contact us! JK. This is just a demo.';
+    
     //this.donutCounter = 0;
     var counter = 0
     var ctx;
@@ -28,17 +28,19 @@ angular.module('gameService', ['loginService'])
     var positionDonuts;
     var userId;
 
-    donutCounter = 0;
+    this.donutCounter = 0;
+    var donuts =0;
     
-
+    this.message = 'Contact us! JK. This is just a demo.' + this.donutCounter;
+    this.donutMessage = ''
     function getUserHash() {
         token =  {token: Auth.getToken()}
-        console.log(Auth.getToken())
+        // console.log(Auth.getToken())
         $http.get('api/me', token).then(successCallback, errorCallback);	
         function successCallback(result){
-            console.log(result)
-            console.log( result.data.username);
-            console.log(getHash(result.data.username));
+            // console.log(result)
+            // console.log( result.data.username);
+            // console.log(getHash(result.data.username));
             userId =getHash(result.data.username);
             return this.userId;
         //  return null;
@@ -85,7 +87,7 @@ angular.module('gameService', ['loginService'])
         var mapArray = getMapArray();
 
             'use strict';
-            var refreshRate = 4000;    // time in millisec
+            var refreshRate = 500;    // time in millisec
             window.setInterval(function () {
                getMapArray();
             }, refreshRate);
@@ -169,13 +171,17 @@ angular.module('gameService', ['loginService'])
     }
 
     updateCounters = function(value) {
-        console.log("updatecounters " + value)
-        this.message = "updated for " + value
-        this.message = "donuts " + donutCounter;
+        
         if (value == 1){
-            donutCounter +=1;
-           
+            this.donutCounter +=1;
+            donuts +=1;                   
         }
+        else if (value == 2){
+           
+            $(".modal-body #treasure").text( "testValue" );
+            $("#myModal").modal()
+        }           
+        return null;
     }
 
     // function updateCounters(value){
@@ -202,28 +208,28 @@ angular.module('gameService', ['loginService'])
     }
 
     this.forward = function() {
-        counter +=1;
-     //   this.message = "msg new" + counter; 
-       // console.log(mapArray) 
-     //   console.log(userId)
         modifyMap("forward") 
-        
+        counter +=1;
+        this.donutMessage = donuts;        
     }
 
     this.back = function() {
-        counter -=1;
-       // this.message = "minus" + counter;
         modifyMap("back");
+        counter -=1;
+        this.donutMessage = donuts;
     }
 
     this.left = function () {
-        //this.message = "left ";
-        modifyMap("left");    
+        modifyMap("left");            
+        this.donutMessage = donuts;
     }
 
     this.right = function() {
+        modifyMap("right");   
         //this.message = "right";
-        modifyMap("right");    
+        this.donutMessage = donuts;
+        //this.message = "msg new" + donuts; 
+ 
     }
 
     this.getGame = function(){
