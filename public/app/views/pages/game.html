@@ -1,8 +1,17 @@
+
 <div class="jumbotron text-center">
 
     <h1>Game Page</h1>
 
     <p>{{ game.message }}</p>
+    <p>{{ game.donutCounter }}</p>
+    <div class="container" ng-app="routerApp" ng-controller="userController as main">
+       <P>test output {{ main.test }}</P> 
+    </div>
+    <div class="container" ng-app="routerApp" ng-controller="mainController as main">
+        <P>test output {{ main.test }}</P> 
+     </div>
+
     <div class="container">
 
         <!-- Replace firefox window.onload func -->
@@ -11,46 +20,96 @@
 
         <div class="row">
             <div class="form-group col-xs-4">                
-                <button id="btnStart" ng-click="game.reset()">Lets play a game</button>                
+                <button id="btnStart" ng-click="game.getGame()">game test get</button> 
+                <button id="btnStart" ng-click="game.gameTest()">game test put</button>                  
             </div>
-            <div class="form-group col-xs-4">                
-                    <button id="btnForward" ng-click="game.forward()">Forward</button>                
+            <div class="form-group col-xs-4">         
+                    <!-- <div class="col-xs-1">
+                            <img src="/app/img/homer.png" style="padding-top:55px;padding-right:10px;" id="homer" alt="Homer">
+                    </div> -->
             </div>
-            <div class="form-group col-xs-4">                
-                    <button id="btnBack" ng-click="game.back()">Back</button>                
+            <div class="form-group col-xs-4">  
+                            
             </div>            
         </div>
         <div class="row">
             <div class="form-group col-xs-4">
 
             </div>
-            <div class="form-group col-xs-4">                
-                <button id="btnLeft" ng-click="game.left()">Left</button>                
+            <div class="form-group col-xs-4"> 
+                                                
             </div>
-            <div class="form-group col-xs-4">                    
-                <button id="btnRight" ng-click="game.right()">Right</button>                    
-            </div>
-        </div>
-        <br />
-
-        <div class="row">
-            <div class="col-xs-10">
-                <canvas id="myCanvas" width=700 height=500 style="border: 1px gray solid;"></canvas>
-            </div>
-            <div class="col-xs-2">
-                    <img src="/app/img/homer.png" style="padding-top:55px;padding-right:10px;" id="homer" alt="Homer">
+            <div class="form-group col-xs-4">  
+                                                                    
             </div>
         </div>
-        <br/>
         <div class="row">
-            <div class="col-xs-4">
-                <button ng-click="game.load()">TEST</button>
-            </div>
-            <div class="col-xs-8">
-                <!-- <img src="/img/donut.png"> -->
-                <label>eeeeeeeeeeeee</label>
+            <div class="col-xs-2 col-xs-offset-1">
                 
             </div>
         </div>
+        <div class="row">
+        
+            <div class="col-xs-3">
+                <div class="row">
+                    <div class="col-xs-4">
+                            <div class="btn btn-success btn-s"  id="btnLeft"  style="width:70px; margin-top:30px" ng-click="game.left()"     >
+                                    <span class="glyphicon glyphicon-arrow-left">Left</span>             
+                                </div>  
+                    </div>
+                    <div class="col-xs-4">
+                            <div class="btn btn-success btn-s"  id="btnForward" style="width:70px" ng-click="game.forward()"     >
+                                    <span class="glyphicon glyphicon-arrow-up">Up</span>             
+                            </div>
+        
+                            <div class="btn btn-success btn-s"  id="btnBack"  style="width:70px" ng-click="game.back()"     >
+                                    <span class="glyphicon glyphicon-arrow-down">Down</span>             
+                            </div>                            
+                    </div>
+                    <div class="col-xs-4">
+                            <div class="btn btn-success btn-s"  id="btnRight" style="width:70px; margin-top:30px" ng-click="game.right()"     >
+                                    <span class="glyphicon glyphicon-arrow-right">Right</span>             
+                            </div>                          
+                    </div>                        
+                </div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <br/>
+                            <p>Collected donuts: {{ game.donutMessage }}</p>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-xs-9">
+                <canvas id="myCanvas" width=700 height=500 style="border: 1px gray solid;"></canvas>
+            </div>
+
+        </div>
+        <br/>
     </div>
 </div>
+<!-- Modal -->
+<div class="modal fade" id="myModal" role="dialog">
+  <div class="modal-dialog">
+  
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Modal Header</h4>
+      </div>
+      <div class="modal-body">
+          <label id="treasure" name="treasure" value="">
+        <p>Some text in the modal.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+    
+  </div>
+</div>
+
+
+
