@@ -2,6 +2,7 @@ var User       = require('../models/user');
 var Game 			 = require('../models/game')
 var jwt        = require('jsonwebtoken');
 var config     = require('../../config');
+var decodedLocal;
 
 // super secret for creating tokens
 var superSecret = config.secret;
@@ -75,9 +76,13 @@ module.exports = function(app, express) {
 	    jwt.verify(token, superSecret, function(err, decoded) {      
 	      if (err)
 	        return res.json({ success: false, message: 'Failed to authenticate token.' });    
-	      else
+		  else
+		 
 	        // if everything is good, save to request for use in other routes
-	        req.decoded = decoded;    
+			req.decoded = decoded;    
+		
+			decodedLocal = decoded;
+			next();
 	    });
 
 	  } else {
@@ -101,17 +106,26 @@ module.exports = function(app, express) {
 		res.json({ message: 'hooray! welcome to our api!' });	
 	});
 
+	apiRouter.get('/me', function(req, res) {
+	//	console.log(req.decoded);
+	//	console.log(decodedLocal)
+		//res.json({ message: res})
+		res.send(decodedLocal);
+		});
+
 	// on routes that end in /users
 	// ----------------------------------------------------
 	apiRouter.route('/users')
 
 		// create a user (accessed at POST http://localhost:8080/users)
 		.post(function(req, res) {
-			console.log("users accessed");
+		//	console.log("users accessed");
 			var user = new User();		// create a new instance of the User model
 			user.name = req.body.name;  // set the users name (comes from the request)
 			user.username = req.body.username;  // set the users username (comes from the request)
 			user.password = req.body.password;  // set the users password (comes from the request)
+			user.user_id = req.body.user_id;
+			user.icon = req.body.icon;
 
 			user.save(function(err) {
 				if (err) {
@@ -168,7 +182,7 @@ module.exports = function(app, express) {
 
 		// get all the users (accessed at GET http://localhost:8080/api/games)
 		.get(function(req, res) {
-			game.find(function(err, games) {
+			Game.find(function(err, games) {
 				if (err) res.send(err);
 
 				// return the users
@@ -192,21 +206,73 @@ module.exports = function(app, express) {
 
 		// update the user with this id
 		.put(function(req, res) {
+			var retValue;
 			Game.findById(req.params.game_id, function(err, game) {
 
 				if (err) res.send(err);
-				console.log("request body" + game.name + req.body.players + game.map)
+				var movement;
+				
+
 				// set the new user information if it exists in the request
 				if (req.body.name) game.name = req.body.name;
 				if (req.body.players) game.players = req.body.players;
-			if (req.body.map) game.map = req.body.map;
+				if (req.body.map) mapArray = req.body.map;
+				
+				if (req.body.movement) {
+					userId = req.body.userId
+					console.log(userId)
+					movement = req.body.movement
+					loop1:
+					for (i=0; i < mapArray.length; i++){
+					   loop2:
+						for (j=0; j <mapArray[i].length; j++){
+							if (mapArray[i][j] == userId){
+								
+								if (i >= 1 && movement === "left" ){
+									retValue = mapArray[i-1][j];
+									//updateCounters(mapArray[i-1][j])
+									mapArray[i-1][j] = userId;
+									mapArray[i][j] = 0;
+									break loop1;
+								}
+								if (i < mapArray.length-1 && movement === "right"){
+									retValue = mapArray[i+1][j];
+									//updateCounters(mapArray[i+1][j])
+									mapArray[i+1][j] = userId;   
+									mapArray[i][j] = 0;             
+									break loop1;                     
+								}
+								if (j > 0 && movement === "forward"){
+									retValue = mapArray[i][j-1];
+									//updateCounters(mapArray[i][j-1])
+									mapArray[i][j-1] = userId;     
+									mapArray[i][j] = 0;           
+									break loop1;
+								}
+								if (j < mapArray[j].length-1 && movement === "back"){
+									retValue = mapArray[i][j+1];
+									//updateCounters(mapArray[i][j+1])
+									mapArray[i][j+1] = userId; 
+									mapArray[i][j] = 0;                      
+									break loop1;
+								}
+			
+							}
+							if (mapArray[i][j]==0 && movement === "spawn"){
+								mapArray[i][j] = userId;
+								break loop1;
+							}                                                
+						}
+					}   
+					game.map = mapArray;
+				}
 
-				// save the user
+				// save the map
 				game.save(function(err) {
 					if (err) res.send(err);
-
+					console.log(retValue)
 					// return a message
-					res.json({ message: 'User updated!' });
+					res.json({ message: 'game updated!', updateValue: retValue });
 				});
 
 			});
@@ -225,6 +291,22 @@ module.exports = function(app, express) {
 
 	
 
+	apiRouter.route('/users/:username')
+		
+
+		// get the user with that id
+		.get(function(req, res) {
+
+			User.find({"username" : req.params.username.split(":")[1]} , function(err, user) {
+
+
+				if (err) res.send(err);
+
+				// return that user				
+				res.json(user);
+			});
+		});
+	
 
 	// on routes that end in /users/:user_id
 	// ----------------------------------------------------
@@ -232,10 +314,15 @@ module.exports = function(app, express) {
 
 		// get the user with that id
 		.get(function(req, res) {
-			User.findById(req.params.user_id, function(err, user) {
+
+			User.findById(req.params.user_id , function(err, user) {
+
+
 				if (err) res.send(err);
 
 				// return that user
+				console.log(req.params.user_id)
+
 				res.json(user);
 			});
 		})
