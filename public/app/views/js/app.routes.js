@@ -35,15 +35,25 @@ angular.module('routerRoutes', ['ngRoute', 'loginService'])
             }
         })
 
-                        // route for the game page
-                        .when('/game', {
-                            templateUrl : 'app/views/pages/game.html',
-                            controller  : 'gameController',
-                            controllerAs: 'game',
-                            resolve: {
-                                factory: checkRouting
-                            }
-                        })
+        // route for the game page
+        .when('/game', {
+            templateUrl : 'app/views/pages/game.html',
+            controller  : 'gameController',
+            controllerAs: 'game',
+            resolve: {
+                factory: checkRouting
+            }
+        })
+
+        // route for the game page
+        .when('/selectgame', {
+            templateUrl : 'app/views/pages/selectgame.html',
+            controller  : 'selectGameController',
+            controllerAs: 'selectgame',
+            resolve: {
+                factory: checkRouting
+            }
+        })
 
         .when('/login', {
             templateUrl : 'app/views/pages/login.html',
