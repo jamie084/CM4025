@@ -1,0 +1,22 @@
+<div class="jumbotron text-center">
+
+    {{ selectgame.message }}
+
+     <!-- display the list using ng-repeat -->
+ <h2>List of available games:</h2>
+ <table class="table table-bordered">
+  <thead>
+  <tr>
+   <td>Name of map</td>
+   <td>Number of players</td>
+   <td>Some extra shit</td>
+  </tr>
+  </thead>
+  <tbody>
+  <tr ng-repeat="game in selectgame.games">
+   <td>{{ game.name }}</td>
+   <td>{{ game.players }}</td>
+  <td> <a href="/game/?_id={{game._id}}">Join</a></td>
+  </tr>
+  </tbody>
+ </table>
