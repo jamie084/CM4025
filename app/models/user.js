@@ -6,12 +6,17 @@ var bcrypt 		 = require('bcrypt-nodejs');
 var UserSchema   = new Schema({
 	name: String,
 	username: { type: String, required: true, index: { unique: true }},
-	password: { type: String, required: true, select: false }
+	password: { type: String, required: true, select: false },
+	icon: { type: Number},
+	user_id: { type: Number},
+	donuts: {type: Number}
 });
 
 // hash the password before the user is saved
 UserSchema.pre('save', function(next) {
 	var user = this;
+
+
 
 	// hash the password only if the password has been changed or user is new
 	if (!user.isModified('password')) return next();
@@ -24,6 +29,8 @@ UserSchema.pre('save', function(next) {
 		user.password = hash;
 		next();
 	});
+
+
 });
 
 // method to compare a given password with the database hash
