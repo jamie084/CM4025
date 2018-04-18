@@ -1,4 +1,4 @@
-angular.module('routerApp', ['routerRoutes', 'loginService',  'gameService', 'ngAnimate'])
+angular.module('routerApp', ['routerRoutes', 'loginService',  'gameService', 'ngAnimate', 'chat'])
 
 
 // create the controller and inject Angular's 
