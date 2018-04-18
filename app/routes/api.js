@@ -1,7 +1,8 @@
-var User       = require('../models/user');
-var Game 			 = require('../models/game')
-var jwt        = require('jsonwebtoken');
-var config     = require('../../config');
+var User       	= require('../models/user');
+var Game 		= require('../models/game')
+var Chat 		= require('../models/chat')
+var jwt        	= require('jsonwebtoken');
+var config     	= require('../../config');
 var decodedLocal;
 
 // super secret for creating tokens
@@ -112,6 +113,46 @@ module.exports = function(app, express) {
 		//res.json({ message: res})
 		res.send(decodedLocal);
 		});
+
+	// on routes that end in /chat
+	// ----------------------------------------------------
+	apiRouter.route('/chat')
+	.get(function(req, res) {
+		Chat.find(function(err, chat) {
+			if (err) res.send(err);
+
+			// return the users
+			res.json(chat);
+		})
+	})
+	;
+	apiRouter.route('/chat/:chat_id')
+				// update the user with this id
+				.put(function(req, res) {
+					var chat = new Chat();
+					Chat.findById(req.params.chat_id, function(err, chat) {
+		
+						if (err) res.send(err);
+		
+						// set the new user information if it exists in the request
+						if (req.body) chat.messageData = req.body;
+						console.log("put req")
+						console.log(req.body)
+						console.log(chat.messageData)
+		
+						// save the user
+						chat.save(function(err) {
+							if (err) res.send(err);
+		
+							// return a message
+							res.json({ message: 'chat updated!' });
+						});
+					});
+				})
+		
+					
+	
+	
 
 	// on routes that end in /users
 	// ----------------------------------------------------
