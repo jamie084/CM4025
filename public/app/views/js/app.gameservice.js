@@ -20,11 +20,24 @@ angular.module('gameService', ['loginService'])
     imgDonut.src = defSrc + "donut.png";
     var imgGround05 = new Image(128,128);
     imgGround05.src = mapSrc + "ground05.png";
-    var imgTreasureChest = new Image(128,128);
+    var imgGround07 = new Image(128,128);
+    imgGround07.src = mapSrc + "ground07.png";
+    var imgGround08 = new Image(128,128);
+    imgGround08.src = mapSrc + "ground08.png";
+    var rocky03 = new Image(128,128);
+    rocky03.src = mapSrc + "rocky03.png";
+    var tinygrass = new Image(128,128);
+    tinygrass.src = mapSrc + "tiny grass.png";
+    var stone01 = new Image(128,128);
+    stone01.src = mapSrc + "stone01.png";
+
+    var imgTreasureChest = new Image(128,128);    
     imgTreasureChest.src = treasureSrc + "chestFull.png"
    // var imgGround07 = new Image(100,100);
     var mapArrayDefault = [[0,2,3,4,0,0,0,0,0],[0,3,1,0,0,0,0,0,0],[0,3,1,0,3254570,0,0,0,0],[0,2,1,0,0,0,0,0,0],[0,0,1,0,0,0,0,0,0],[0,3,1,0,0,0,0,0,0],[0,3,1,0,0,0,0,0,0],[0,3,1,0,0,0,0,0,0],[0,3,1,0,0,0,0,0,0]]
-    var mapArray = [];
+ //   var basemap = [[0,2,2,2,0,0,0,0,0],[0,1,1,0,0,0,0,0,0],[0,1,1,0,1,0,0,0,0],[0,1,1,0,0,0,0,0,0],[0,0,1,0,0,0,0,0,0],[0,3,1,0,0,0,0,0,0],[0,3,1,0,0,0,0,0,0],[0,3,1,0,0,0,0,0,0],[0,3,1,0,0,0,0,0,0]]
+    vm.basemap =  [];
+    vm.mapArray = [];
     var positionX = 350;
     var positionY = 400;
     var positionDonuts;
@@ -51,6 +64,7 @@ angular.module('gameService', ['loginService'])
             if ( typeof result.data.username != 'undefined'){
             //generate an integer type of userid based on the unique username
             vm.userId = getHash(result.data.username);
+            getMapArray();
             console.log(vm.userId)
             //get the user object and assign to a global var
             $http.get('api/users/username:' + result.data.username, token).then(successCallback, errorCallback);
@@ -58,8 +72,10 @@ angular.module('gameService', ['loginService'])
                     vm.user = result.data[0]                       
                     vm.username = vm.user.username;
                     vm.donutMessage = vm.user.donuts;
-                    getMapArray();
-                   
+                    
+
+           
+                    drawMap(vm.mapArray);
                     return vm.user;
                 }
                 function errorCallback(result){
@@ -77,7 +93,7 @@ angular.module('gameService', ['loginService'])
 
     function getMapArray(){
         
-        console.log("url id " + _id)
+        //console.log("url id " + _id)
         $http({
             url: 'api/games/' + _id, 
             method: "GET",
@@ -85,11 +101,12 @@ angular.module('gameService', ['loginService'])
          }).then(successCallback, errorCallback);	              
         //on success function
          function successCallback(result){
-
+                console.log(result.data)
            vm.mapArray = result.data.map;
 
-           drawMap(result.data.map);
-           return this.mapArray;
+           vm.basemap = result.data.basemap;
+           
+           return vm.mapArray;
          }     
          function errorCallback(result){
              // vm.message = "An error occured, please try again later"
@@ -109,18 +126,24 @@ angular.module('gameService', ['loginService'])
         ctx.stroke();
 
         getUserHash();
-       
+
+
            var refreshRate = 4000;    // time in millisec
            intervalId =  window.setInterval(function () {
+            
                getMapArray(); 
+               drawMap(vm.mapArray);
                vm.donutMessage = donuts;             
             }, refreshRate);
 
             //stop the refreshing of the canvas
               $scope.$on('$destroy', function() {              
                 window.clearInterval(intervalId);
+                console.log("remove playa")
+                updateGameDB("remove")
               });
-
+              
+         updateGameDB("spawn")
     }
 
 
@@ -140,10 +163,33 @@ angular.module('gameService', ['loginService'])
         ctx = getCtx();
         var x =0;
         var y=0;
-        
+       // console.log(basemap)
         for (i=0; i < mapArray.length; i++){
             for (j=0; j <mapArray[i].length; j++){
-                ctx.drawImage(imgGround05, x,y,50,50)
+                //to draw the base map
+                switch(vm.basemap[i][j]){
+                    case 0:
+                        ctx.drawImage(imgGround05, x,y,50,50)
+                        //add an extra layout randomized
+                        // var rand = Math.floor((Math.random() * 10) + 1)
+                        // if (rand>7){
+                        //     ctx.drawImage(tinygrass,x,y,50,50)
+                        // }
+                        break;
+                    case 1:
+                        ctx.drawImage(imgGround05, x,y,50,50)
+                        break;
+                    case 2:
+                        ctx.drawImage(imgGround05, x,y,50,50)
+                        ctx.drawImage(tinygrass,x,y,50,50)
+                        break;
+                    case 3:
+                        ctx.drawImage(imgGround05, x,y,50,50)
+                        ctx.drawImage(stone01,x,y,35,35);
+                        break;
+                }
+               
+                //draw the items
                 if (mapArray[i][j] == 1){
                     ctx.drawImage(imgDonut, x+10, y+10, 30,30)
                 }
@@ -164,7 +210,7 @@ angular.module('gameService', ['loginService'])
             }
             y= 0;
             x += 50;
-            ctx.drawImage(imgGround05, positionX, positionY,30,30);  
+         //   ctx.drawImage(imgGround05, positionX, positionY,30,30);  
         }
        
         
@@ -191,7 +237,7 @@ angular.module('gameService', ['loginService'])
     }
 
     function updateGameDB(strMovement){
-        console.log(vm.mapArray)
+        console.log("updateGameDb: " + strMovement + " " + vm.userId)
         vm.game = { name: 'zsotika', players: ["5a8ab9b69b10d304a8a3eff0"], map: vm.mapArray, movement: strMovement, userId: vm.userId};
         var header =  { "x-access-token": Auth.getToken()}      
         $http.put('api/games/' + _id, vm.game, header).then(successCallback, errorCallback);	
@@ -244,7 +290,7 @@ angular.module('gameService', ['loginService'])
 
     this.gameTest = function() {
         var vm = this;        
-        vm.game = { name: 'zsotika', players: ["5a8ab9b69b10d304a8a3eff0"], map: mapArrayDefault, movement: "forward", userId: vm.userId};
+        vm.game = { name: 'zsotika', players: ["5a8ab9b69b10d304a8a3eff0"], map: mapArrayDefault, basemap: vm.basemap, movement: "forward", userId: vm.userId};
         var header =  { "x-access-token": Auth.getToken()}
         $http.put('api/games/5ad62ca1eddfed27bc3a8caa', vm.game, header).then(successCallback, errorCallback);	
  
