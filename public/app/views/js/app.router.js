@@ -62,8 +62,7 @@ angular.module('routerApp', ['routerRoutes', 'loginService',  'gameService', 'ng
 		   vm.games.push({
 			name: result.data[i].name,
 			players: result.data[i].players.length,
-			_id: result.data[i]._id,
-			nerdness: 7
+			_id: result.data[i]._id,			
 		});
 	   }
 
