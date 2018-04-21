@@ -14,7 +14,6 @@ module.exports = function(app, express) {
 
 	// route to authenticate a user (POST http://localhost:8080/api/authenticate)
 	apiRouter.post('/authenticate', function(req, res) {
-		console.log(req.body.username);
 
 	  // find the user
 	  User.findOne({
@@ -64,9 +63,6 @@ module.exports = function(app, express) {
 
 	// route middleware to verify a token
 	apiRouter.use(function(req, res, next) {
-		// do logging
-		console.log('Somebody just came to our app!');
-
 	  // check header or url parameters or post parameters for token
 	   var token = req.body.token || req.query.token || req.headers['x-access-token'];
 
@@ -108,9 +104,6 @@ module.exports = function(app, express) {
 	});
 
 	apiRouter.get('/me', function(req, res) {
-	//	console.log(req.decoded);
-	//	console.log(decodedLocal)
-		//res.json({ message: res})
 		res.send(decodedLocal);
 		});
 
@@ -205,6 +198,7 @@ module.exports = function(app, express) {
 			game.name = req.body.name;  // set the users username (comes from the request)
 			game.players = req.body.players;  // set the users password (comes from the request)
 			game.map = req.body.map;
+			game.basemap = req.body.basemap;
 
 			game.save(function(err) {
 				if (err) {
@@ -247,26 +241,32 @@ module.exports = function(app, express) {
 
 		// update the user with this id
 		.put(function(req, res) {
-			var retValue;
+			var retValue =0;
 			Game.findById(req.params.game_id, function(err, game) {
 
 				if (err) res.send(err);
 				var movement;
-				
-
-				// set the new user information if it exists in the request
-				if (req.body.name) game.name = req.body.name;
+								// set the new game information if it exists in the request
+				if (req.body.name) game.name = "budi";
 				if (req.body.players) game.players = req.body.players;
-				if (req.body.map) mapArray = req.body.map;
-				
+			//	if (req.body.map) game.map = req.body.map;
+				console.log(game.name)
+				var mapArray = game.map;
+			
 				if (req.body.movement) {
+					
 					userId = req.body.userId
-					console.log(userId)
 					movement = req.body.movement
+					console.log(userId + movement)
 					loop1:
 					for (i=0; i < mapArray.length; i++){
+						
 					   loop2:
-						for (j=0; j <mapArray[i].length; j++){
+						for (j=0; j < mapArray[i].length; j++){
+							if (mapArray[i][j] == 0 && movement === "spawn"){
+								mapArray[i][j] = userId;
+								break loop1;
+							}
 							if (mapArray[i][j] == userId){
 								
 								if (i >= 1 && movement === "left" ){
@@ -277,6 +277,7 @@ module.exports = function(app, express) {
 									break loop1;
 								}
 								if (i < mapArray.length-1 && movement === "right"){
+									console.log("right")
 									retValue = mapArray[i+1][j];
 									//updateCounters(mapArray[i+1][j])
 									mapArray[i+1][j] = userId;   
@@ -297,21 +298,30 @@ module.exports = function(app, express) {
 									mapArray[i][j] = 0;                      
 									break loop1;
 								}
-			
+								}
+								if (movement === "remove"){
+									mapArray[i][j] = 0;
+									break loop1;
+								}
 							}
-							if (mapArray[i][j]==0 && movement === "spawn"){
-								mapArray[i][j] = userId;
-								break loop1;
-							}                                                
-						}
-					}   
+
+					}  
+					
 					game.map = mapArray;
+					//https://stackoverflow.com/questions/24618584/mongoose-save-not-updating-value-in-an-array-in-database-document
+					game.markModified('map')				
+
 				}
+
 
 				// save the map
 				game.save(function(err) {
-					if (err) res.send(err);
-					console.log(retValue)
+					if (err) {
+						console.log(err)
+						res.send(err);
+					}
+				//	console.log(res.updateValue)
+				//	console.log("save map" + game.map)
 					// return a message
 					res.json({ message: 'game updated!', updateValue: retValue });
 				});
@@ -342,7 +352,7 @@ module.exports = function(app, express) {
 
 
 				if (err) res.send(err);
-
+				
 				// return that user				
 				res.json(user);
 			});
@@ -362,6 +372,7 @@ module.exports = function(app, express) {
 				if (err) res.send(err);
 
 				// return that user
+				console.log("userID: ")
 				console.log(req.params.user_id)
 
 				res.json(user);
