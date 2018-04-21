@@ -9,14 +9,33 @@
   <tr>
    <td>Name of map</td>
    <td>Number of players</td>
-   <td>Some extra shit</td>
+   <td></td>
   </tr>
   </thead>
   <tbody>
   <tr ng-repeat="game in selectgame.games">
    <td>{{ game.name }}</td>
    <td>{{ game.players }}</td>
-  <td> <a href="/game/?_id={{game._id}}">Join</a></td>
+  <td> <a href="/game/?_id={{game._id}}">Join the game</a></td>
   </tr>
   </tbody>
  </table>
+</div>
+
+ <div ng-controller="ChatController as chatController">
+    <div>
+      <div>
+        <div ng-repeat="message in chatController.messages">{{message.from}}: {{message.text}}</div>
+      </div>
+      <div>
+        <input type="text" placeholder="type your message" ng-model="chatController.newMessage">
+        <button ng-click="chatController.sendMessage(chatController.newMessage)">send</button>
+      </div>
+      
+      <select ng-model="chatController.sendAs">
+        <option default value="Alice">Send as Alice</option>
+        <option value="Bob">Send as Bob</option>
+      </select>
+      
+    </div>
+  </div>
