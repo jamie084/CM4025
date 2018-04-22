@@ -13,11 +13,117 @@ angular.module('routerApp', ['routerRoutes', 'loginService',  'gameService', 'ng
 })
 
 // home page specific controller
-.controller('homeController', function() {
+.controller('homeController', function($http, Auth) {
 
-	var vm = this;
+	var vm = this;	
+	counter = 1;
+	vm.isLeftDisabled = true;
+	vm.user = {}
+	vm.isSuccess = false;
+	
+	console.log();
 
-	vm.message = 'This is the home page!';
+	// function successCallback(result){
+	// 	console.log(result)
+	// }
+
+	// function errorCallback(result){
+
+	// }
+
+
+
+    this.load = function() {
+		console.log("load")
+
+		setUser();
+		//console.log(token)
+	}
+	//get the logged in username based on the token inforation
+	function setUser(){
+		var token =  {token: Auth.getToken()}
+		$http({
+			url: 'api/me', 
+			method: "GET",
+			params: {token: Auth.getToken()}
+		 }).then(successCallback, errorCallback);
+	//$http.get('api/me', token).then(successCallback, errorCallback);	
+	function successCallback(result){
+
+		if ( typeof result.data.username != 'undefined'){
+			$http.get('api/users/username:' + result.data.username, token).then(successCallback, errorCallback);
+			function successCallback(result){
+				vm.user = result.data[0]                       
+				console.log(result);
+				return vm.user;
+			}
+			function errorCallback(result){
+				return null;
+			}
+			return vm.user;
+		}
+	 }     
+	 function errorCallback(result){
+		 console.log( result)
+		 return null;
+	 }
+	}
+
+	this.left = function(){
+
+		counter -=1;
+		if (counter == 1){
+			vm.isLeftDisabled = true;
+		}
+		vm.isRightDisabled = false;		
+		changeImgSrc(counter)
+	}
+	this.right = function(){
+		console.log(vm.user)
+		counter +=1;
+		if (counter == 3){
+			vm.isRightDisabled = true;
+		}
+		vm.isLeftDisabled = false;
+		changeImgSrc(counter)
+	}
+
+	this.update = function(){
+		console.log(vm.user)
+		var header =  { "x-access-token": Auth.getToken()}   
+        $http.put('api/users/' + vm.user._id, vm.user, header).then(successCallback, errorCallback);	
+ 
+            //on success function
+            function successCallback(result){
+				vm.isSuccess = true;
+              //  updateCounters(result.data.updateValue)
+            }
+
+            function errorCallback(result){
+                console.log(result)
+            } 
+	}
+
+	function changeImgSrc(value){
+		vm.user.icon = value;
+		var img = ""
+		switch(value){
+			case 1:
+				img = "homer";
+				break;
+				case 2:
+				img = "bart";
+				break;
+			case 3:
+				img= "lisa"
+				break;
+		}
+
+		document.getElementById("imgIcon").src="/app/img/" + img + ".png";
+	}
+
+	
+	//document.getElementById("imgIcon").src="../template/save.png";
 	
 })
 
