@@ -104,6 +104,8 @@ module.exports = function(app, express) {
 	});
 
 	apiRouter.get('/me', function(req, res) {
+		console.log("api Me")
+		console.log(decodedLocal)
 		res.send(decodedLocal);
 		});
 
@@ -134,11 +136,7 @@ module.exports = function(app, express) {
 						}
 						chat.messageData.push(req.body);
 						chat.markModified('messageData')	
-					//	if (req.body) chat.messageData = chat.messageData[0].push(req.body);
-						console.log("put req")
-						console.log(req.body)
-						console.log(chat.messageData)
-		
+
 						// save the user
 						chat.save(function(err) {
 							if (err) res.send(err);
@@ -166,6 +164,9 @@ module.exports = function(app, express) {
 			user.password = req.body.password;  // set the users password (comes from the request)
 			user.user_id = req.body.user_id;
 			user.icon = req.body.icon;
+			user.donuts = req.body.donuts;
+			user.beers = req.body.beers;
+			user.exp = req.body.exp; 
 
 			user.save(function(err) {
 				if (err) {
@@ -248,6 +249,10 @@ module.exports = function(app, express) {
 		// update the user with this id
 		.put(function(req, res) {
 			var retValue =0;
+			var donutcounter = 0;
+			var chestcounter = 0;
+			var beercounter =0;
+
 			Game.findById(req.params.game_id, function(err, game) {
 
 				if (err) res.send(err);
@@ -269,6 +274,7 @@ module.exports = function(app, express) {
 						
 					   loop2:
 						for (j=0; j < mapArray[i].length; j++){
+
 							if (mapArray[i][j] == 0 && movement === "spawn"){
 								mapArray[i][j] = userId;
 								break loop1;
@@ -297,22 +303,66 @@ module.exports = function(app, express) {
 									mapArray[i][j] = 0;           
 									break loop1;
 								}
-								if (j < mapArray[j].length-1 && movement === "back"){
+								if (j < mapArray.length-3 && movement === "back"){
 									retValue = mapArray[i][j+1];
 									//updateCounters(mapArray[i][j+1])
 									mapArray[i][j+1] = userId; 
-									mapArray[i][j] = 0;                      
+									mapArray[i][j] = 0;                    
 									break loop1;
 								}
-								}
+
 								if (movement === "remove"){
 									mapArray[i][j] = 0;
-									break loop1;
+									//break loop1;
 								}
+								}
+
+
+
+
 							}
 
 					}  
-					
+
+					for (i=0; i < mapArray.length; i++){												
+						 for (j=0; j < mapArray[i].length; j++){
+							 countItemsOnMap(mapArray[i][j]);
+						 }
+						}
+
+					function countItemsOnMap(value){
+						switch(value){
+							case 1:
+								donutcounter +=1;
+								break;
+							case 2:
+								chestcounter +=1;
+								break;
+							case 3:
+								beercounter +=1;
+								break;
+						}
+					}
+
+					if ((beercounter + chestcounter + donutcounter) < 8){
+						console.log("lessten")
+						var success= false;
+						while (!success){
+							var randomDrop = Math.floor(Math.random() * 3);
+							var randomColumn = Math.floor(Math.random() * 9);
+							var randomRow = Math.floor(Math.random() * 9);
+							if ( (mapArray[randomColumn][randomRow] === null) || (mapArray[randomColumn][randomRow] === 0)	){
+								if (game.basemap[randomColumn][randomRow] === 0 ){
+									mapArray[randomColumn][randomRow] = randomDrop;
+									success = true;
+									break;
+								}
+
+							}
+						}
+					}
+
+					console.log(donutcounter + " chest " + chestcounter  + " beer "  + beercounter)
 					game.map = mapArray;
 					//https://stackoverflow.com/questions/24618584/mongoose-save-not-updating-value-in-an-array-in-database-document
 					game.markModified('map')				
@@ -371,7 +421,7 @@ module.exports = function(app, express) {
 
 		// get the user with that id
 		.get(function(req, res) {
-
+			console.log(req.params.user_id)
 			User.findById(req.params.user_id , function(err, user) {
 
 
@@ -387,14 +437,21 @@ module.exports = function(app, express) {
 
 		// update the user with this id
 		.put(function(req, res) {
+			console.log("user put func")
+			console.log(req.body)
 			User.findById(req.params.user_id, function(err, user) {
 
 				if (err) res.send(err);
-
+				console.log("user put func")
+				console.log(req.body)
 				// set the new user information if it exists in the request
 				if (req.body.name) user.name = req.body.name;
 				if (req.body.username) user.username = req.body.username;
 				if (req.body.password) user.password = req.body.password;
+				if (req.body.beers) user.beers = req.body.beers;
+				if (req.body.donuts) user.donuts = req.body.donuts;
+				if (req.body.exp) user.exp = req.body.exp;
+				if (req.body.icon) user.icon = req.body.icon;
 
 				// save the user
 				user.save(function(err) {
