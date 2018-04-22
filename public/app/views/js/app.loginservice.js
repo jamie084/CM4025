@@ -6,25 +6,27 @@ angular.module('loginService', ['authService', 'userService'])
 		var vm = this;
 		vm.isLoggedIn = Auth.isLoggedIn();
 		vm.error = false;
-		vm.credentials = { username: '', password: ''};      
+		vm.credentials = { username: '', password: ''};   
+		//vm.username = "test";   
 
 
 		// get all the stuff
 		vm.btn_LoginOnClientclick = function(username, password){
-			var data = {
-				username: 'changedUser'
-			};
+			// var data = {
+			// 	username: 'changedUser'
+			// };
 		
 
-			Auth.login(vm.credentials.username, vm.credentials.password)
-
-						
+			Auth.login(vm.credentials.username, vm.credentials.password)									
 			
 			// promise object
 			.success(function(data) {
 				console.log(Auth.getToken())
+				console.log("username ass " + vm.credentials.username)
+				
 				if (Auth.isLoggedIn()){
 					window.location.href = '/';
+					vm.username = username;
 				}
 				else{
 					vm.message = data.message;
@@ -74,16 +76,14 @@ angular.module('loginService', ['authService', 'userService'])
 	  	
 
 	//on success function
-	function successCallback(result){
-		console.log(result.data)
+	function successCallback(result){		
 		//if the new user created
 		if (result.data.message == "User created!"){
 			//automatically logs in the user, and redirects to home pahe
 			Auth.login(vm.credentials.username, vm.credentials.password)			
 				.success(function(data) {
 					
-					if (data.success = true){
-						console.log("success login")
+					if (data.success = true){						
 						window.location.href = '/';
 					}
 				});
