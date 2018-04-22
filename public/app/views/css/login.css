@@ -6,8 +6,11 @@
  */
  body, html {
     height: 100%;
+    width: 100%;
     background-repeat: no-repeat;
-    background-image: linear-gradient(rgb(104, 145, 162), rgb(12, 97, 33));
+    background-image: url("/app/img/Simpsons_bg.jpg");
+    background-position: center;
+    background-size: cover;
 }
 
 .card-container.card {
