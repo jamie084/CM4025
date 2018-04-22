@@ -6,25 +6,28 @@
         <div class="alert alert-danger" runat ="server" id="modalEditError" ng-show="main.error" visible ="false">                
                 <strong>{{ main.message }}</strong>
         </div>
-        <div class="card card-container">
-            <!-- <img class="profile-img-card" src="//lh3.googleusercontent.com/-6V8xOA6M7BA/AAAAAAAAAAI/AAAAAAAAAAA/rzlHcD0KYwo/photo.jpg?sz=120" alt="" /> -->
-            <img id="profile-img" class="profile-img-card" src="//ssl.gstatic.com/accounts/ui/avatar_2x.png" />
+        <div class="card card-container">            
+            <img id="profile-img" class="profile-img-card" src="/app/img/homerProfile2.png" />
+            <div class="label-info text-center">
+                    <h3><strong>Please sign in </strong></h3>        
+            </div>
+
             <p id="profile-name" class="profile-name-card"></p>
             <form class="form-signin" ng-submit="main.btn_LoginOnClientclick(main.credentials.username, main.credentials.password)" >
                 <!-- <span id="reauth-email" class="reauth-email"></span> -->
                 <input type="username" name="User name" id="inputEmail" class="form-control" placeholder="User name" ng-model="main.credentials.username" autocomplete="on" required autofocus>
                 <input type="password" id="inputPassword" class="form-control" placeholder="Password" ng-model="main.credentials.password" required>
-                <div id="remember" class="checkbox">
+                <!-- <div id="remember" class="checkbox">
                     <label>
                         <input type="checkbox" value="remember-me"> Remember me
                     </label>
-                </div>
+                </div> -->
                 <button class="btn btn-lg btn-primary btn-block btn-signin" type="submit">Sign in</button>                
                 <button class="btn btn-lg btn-primary btn-block btn-signin" onclick="location.href='/register'">Register</button>
             </form><!-- /form -->
-            <a href="#" class="forgot-password">
+            <!-- <a href="#" class="forgot-password">
                 Forgot the password?
-            </a>
+            </a> -->
         </div><!-- /card-container -->
     </div><!-- /container -->
 
