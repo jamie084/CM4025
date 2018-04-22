@@ -3,19 +3,25 @@ angular.module('gameService', ['loginService'])
 // contact page controller
 .controller('gameController', function($http, Auth, $scope) {
     var vm = this;
-    //this.donutCounter = 0;
+
     var counter = 0
     var ctx;
+    //Img sources
     var defSrc = "/app/img/";
     var mapSrc = defSrc + "map/";
     var treasureSrc = mapSrc + "TreasureChest/";
 
+    //img declarations
     var imgBackground = new Image(50,50);
     imgBackground.src = defSrc + "background-simpson.jpg";
     var imgHomer = new Image(220,360);
     imgHomer.src = defSrc + "homer.png";
     var imgBart = new Image(723,1105);
     imgBart.src= defSrc + "bart.png";
+    var imgLisa = new Image(300,488);
+    imgLisa.src = defSrc + "lisa.png";
+    var imgBurns = new Image(170,440);
+    imgBurns.src = defSrc  + "burns.png";
     var imgDonut = new Image(20,20);
     imgDonut.src = defSrc + "donut.png";
     var imgGround05 = new Image(128,128);
@@ -30,30 +36,60 @@ angular.module('gameService', ['loginService'])
     tinygrass.src = mapSrc + "tiny grass.png";
     var stone01 = new Image(128,128);
     stone01.src = mapSrc + "stone01.png";
-
     var imgTreasureChest = new Image(128,128);    
     imgTreasureChest.src = treasureSrc + "chestFull.png"
-   // var imgGround07 = new Image(100,100);
+    var imgTree02 = new Image(128,128);
+    imgTree02.src = mapSrc + "tree02.png"
+    var imgMushroom02 = new Image(128,128);
+    imgMushroom02.src = mapSrc + "mushroom02.png"
+    var imgBeer = new Image(128,128);
+    imgBeer.src = defSrc + "beer.png"
+
+   //only used for testing and init set up
     var mapArrayDefault = [[0,2,3,4,0,0,0,0,0],[0,3,1,0,0,0,0,0,0],[0,3,1,0,3254570,0,0,0,0],[0,2,1,0,0,0,0,0,0],[0,0,1,0,0,0,0,0,0],[0,3,1,0,0,0,0,0,0],[0,3,1,0,0,0,0,0,0],[0,3,1,0,0,0,0,0,0],[0,3,1,0,0,0,0,0,0]]
  //   var basemap = [[0,2,2,2,0,0,0,0,0],[0,1,1,0,0,0,0,0,0],[0,1,1,0,1,0,0,0,0],[0,1,1,0,0,0,0,0,0],[0,0,1,0,0,0,0,0,0],[0,3,1,0,0,0,0,0,0],[0,3,1,0,0,0,0,0,0],[0,3,1,0,0,0,0,0,0],[0,3,1,0,0,0,0,0,0]]
     vm.basemap =  [];
     vm.mapArray = [];
-    var positionX = 350;
-    var positionY = 400;
-    var positionDonuts;
 
-    //change to this
-    //var userId;  
- 
+    var positionDonuts;
     var intervalId;
 
-    this.donutCounter = 0;
+    //this.donutCounter = 0;
     
 
     var donuts =0;
+    var beers = 0;
+    var exp = 0;
+
     var _id = getAllUrlParams()._id;
     
-    this.message = 'Contact us! JK. This is just a demo.' + this.donutCounter;
+    this.message = 'Contact us! JK. This is just a demo.';
+
+    this.load = function() {
+        var img = document.getElementById("homer");
+        ctx= getCtx();
+        ctx.stroke();
+
+        getUserHash();
+        var refreshRate = 500;    // time in millisec
+
+       intervalId =  window.setInterval(function () {            
+               getMapArray(); 
+               drawMap(vm.mapArray);
+               vm.donutMessage = donuts; 
+               vm.beerMessage = beers;   
+               vm.expMessage = exp;         
+            }, refreshRate);
+
+            //stop the refreshing of the canvas
+              $scope.$on('$destroy', function() {              
+                window.clearInterval(intervalId);
+                console.log("remove playa")
+                updateGameDB("remove")
+              });
+              
+        // vm.spawn()
+    }
 
     function getUserHash() {
         token =  {token: Auth.getToken()}
@@ -72,8 +108,11 @@ angular.module('gameService', ['loginService'])
                     vm.user = result.data[0]                       
                     vm.username = vm.user.username;
                     vm.donutMessage = vm.user.donuts;
-                    
-
+                    donuts =  vm.user.donuts;
+                    vm.beerMessage = vm.user.beers;
+                    beers = vm.user.beers;
+                    vm.expMessage = vm.user.exp;                    
+                    exp = vm.user.exp;
            
                     drawMap(vm.mapArray);
                     return vm.user;
@@ -81,6 +120,7 @@ angular.module('gameService', ['loginService'])
                 function errorCallback(result){
                     return null;
                 }
+                vm.spawn()
                 return vm.user;
             }
          }     
@@ -120,34 +160,6 @@ angular.module('gameService', ['loginService'])
     }
 
  
-    this.load = function() {
-        var img = document.getElementById("homer");
-        ctx= getCtx();
-        ctx.stroke();
-
-        getUserHash();
-
-
-           var refreshRate = 4000;    // time in millisec
-           intervalId =  window.setInterval(function () {
-            
-               getMapArray(); 
-               drawMap(vm.mapArray);
-               vm.donutMessage = donuts;             
-            }, refreshRate);
-
-            //stop the refreshing of the canvas
-              $scope.$on('$destroy', function() {              
-                window.clearInterval(intervalId);
-                console.log("remove playa")
-                updateGameDB("remove")
-              });
-              
-         updateGameDB("spawn")
-    }
-
-
-
     function getHash(input){
         var hash = 0, len = input.length;
         for (var i = 0; i < len; i++) {
@@ -157,88 +169,144 @@ angular.module('gameService', ['loginService'])
         return hash;
       }
 
-    
-
     function drawMap(mapArray){
         ctx = getCtx();
+        var sizeOfTile = 80;
+        var sizeOfItems = 55;
         var x =0;
         var y=0;
-       // console.log(basemap)
+
+
         for (i=0; i < mapArray.length; i++){
             for (j=0; j <mapArray[i].length; j++){
+                ctx.drawImage(imgGround05, x,y,sizeOfTile,sizeOfTile)
                 //to draw the base map
                 switch(vm.basemap[i][j]){
                     case 0:
-                        ctx.drawImage(imgGround05, x,y,50,50)
-                        //add an extra layout randomized
-                        // var rand = Math.floor((Math.random() * 10) + 1)
-                        // if (rand>7){
-                        //     ctx.drawImage(tinygrass,x,y,50,50)
-                        // }
+                  
                         break;
                     case 1:
-                        ctx.drawImage(imgGround05, x,y,50,50)
+                        ctx.drawImage(imgTree02, x,y,sizeOfTile,sizeOfTile)
                         break;
                     case 2:
-                        ctx.drawImage(imgGround05, x,y,50,50)
-                        ctx.drawImage(tinygrass,x,y,50,50)
+                        ctx.drawImage(imgGround05, x,y,sizeOfTile,sizeOfTile)
+                        ctx.drawImage(tinygrass,x,y,sizeOfTile,sizeOfTile)
                         break;
                     case 3:
-                        ctx.drawImage(imgGround05, x,y,50,50)
-                        ctx.drawImage(stone01,x,y,35,35);
+                        ctx.drawImage(imgGround05, x,y,sizeOfTile,sizeOfTile)
+                        ctx.drawImage(stone01,x,y,sizeOfItems,sizeOfItems);
+                        break;
+                    case 4:
+                        ctx.drawImage(imgMushroom02,x,y,sizeOfItems,sizeOfItems);
+                        break;
+                    case 5:
                         break;
                 }
                
-                //draw the items
-                if (mapArray[i][j] == 1){
-                    ctx.drawImage(imgDonut, x+10, y+10, 30,30)
+                //draw the items on the top of the base map
+                switch(mapArray[i][j]){
+                    case 1:
+                        ctx.drawImage(imgDonut, x+10, y+10, sizeOfItems,sizeOfItems)
+                        break;
+                    case 2:
+                        ctx.drawImage(imgTreasureChest, x+10, y+10, sizeOfItems,sizeOfItems)
+                        break;
+                    case 3:
+                        ctx.drawImage(imgBeer, x+10, y+10, sizeOfItems,sizeOfItems)
+                        break;
+                    case vm.userId:
+                     //   isuserSpawned = true;
+                        if (vm.user.icon == 1) {
+                            ctx.drawImage(imgHomer, x+10, y+10, sizeOfItems,sizeOfItems)
+                            }
+                            else if (vm.user.icon == 2) {
+                                ctx.drawImage(imgBart, x+10, y+10, sizeOfItems,sizeOfItems)
+                            }
+                            else if (vm.user.icon == 3){
+                                ctx.drawImage(imgLisa, x+10,y+10, sizeOfItems, sizeOfItems)
+                            }
+                        break;
                 }
-                else if (mapArray[i][j] == 2) {
-                    ctx.drawImage(imgTreasureChest, x+10, y+10, 30,30)
-                }
-                else if (mapArray[i][j] == vm.userId) {
-                    if (vm.user.icon == 1) {
-                    ctx.drawImage(imgHomer, x+10, y+10, 30,30)
-                    }
-                    else if (vm.user.icon == 2) {
-                        ctx.drawImage(imgBart, x+10, y+10, 30,30)
-                    }
-                    
+
+                if (mapArray[i][j] > 10 && mapArray[i][j] != vm.userId){
+                    ctx.drawImage(imgBurns, x+10, y+10, sizeOfItems,sizeOfItems)
                 }
                 
-                y +=50;
+                y +=sizeOfTile;
             }
             y= 0;
-            x += 50;
-         //   ctx.drawImage(imgGround05, positionX, positionY,30,30);  
-        }
-       
+            x += sizeOfTile;         
+        }    
         
 
     }
 
     updateCounters = function(value) {
         
+        
         if (value == 1){
-            this.donutCounter +=1;
-            donuts +=1;   
-                          
+            donuts +=1;                             
         }
         else if (value == 2){
-           
-            $(".modal-body #treasure").text( "testValue" );
+            vm.isBeerToShow = false;
+            vm.isDonutToShow = false;
+            vm.isExpToShow = false;   
+            var randomDrop = Math.floor(Math.random() * 3);
+            switch(randomDrop){
+                case 0:
+                    vm.isBeerToShow = true;
+                    $(".modal-body #lblBeer").text( "An extra beer for you!!" );
+                    beers += 1;
+                    break;
+                case 1:
+                    vm.isDonutToShow = true;
+                    $(".modal-body #lblDonut").text( "An extra donut for you!!" );
+                    donuts +=1;
+                    break;
+                case 2:
+                    vm.isExpToShow = true;      
+                    var expRand = Math.floor(Math.random() * 9)  + 1            
+                    $(".modal-body #lblExp").text( "Experince points: " + expRand );
+                    exp += expRand;
+                    break;
+            }           
+
             $("#myModal").modal()
-        }           
+        } 
+        else if (value == 3)          {
+            beers += 1;
+        }
+        if (vm.user){
+            vm.user.donuts = donuts;
+            vm.user.beers = beers;
+            vm.user.exp = exp;
+            updateUser();
+        }
         return null;
     }
+
+    function updateUser(){
+        var header =  { "x-access-token": Auth.getToken()}   
+        $http.put('api/users/' + vm.user._id, vm.user, header).then(successCallback, errorCallback);	
+ 
+            //on success function
+            function successCallback(result){
+              //  updateCounters(result.data.updateValue)
+            }
+
+            function errorCallback(result){
+                console.log(result)
+            }      
+    }
+
 
     updateLabels = function(){
         this.message = vm.user.username;
     }
 
     function updateGameDB(strMovement){
-        console.log("updateGameDb: " + strMovement + " " + vm.userId)
-        vm.game = { name: 'zsotika', players: ["5a8ab9b69b10d304a8a3eff0"], map: vm.mapArray, movement: strMovement, userId: vm.userId};
+      //  console.log("updateGameDb: " + strMovement + " " + vm.userId)
+        vm.game = { name: 'zsotika', players: "vm.user._id", map: vm.mapArray, movement: strMovement, userId: vm.userId};
         var header =  { "x-access-token": Auth.getToken()}      
         $http.put('api/games/' + _id, vm.game, header).then(successCallback, errorCallback);	
  
@@ -248,7 +316,7 @@ angular.module('gameService', ['loginService'])
             }
 
             function errorCallback(result){
-                console.log(result)
+                
             }      
     }
 
@@ -272,21 +340,6 @@ angular.module('gameService', ['loginService'])
         updateGameDB("right");   
     }
 
-    this.getGame = function(){
-        // var vm = this;
-
-        // $http.get('api/games/5aa67fc352cb9c2821d71b7d').then(successCallback, errorCallback);	
-   	    // //on success function
-	    // function successCallback(result){
-        //    console.log( result.data.map);
-        // }     
-        // function errorCallback(result){
-        //     console.log("fail " + result)
-        //     // vm.message = "An error occured, please try again later"
-        //     // vm.error = true;
-        // }
-    }
-
 
     this.gameTest = function() {
         var vm = this;        
@@ -296,7 +349,7 @@ angular.module('gameService', ['loginService'])
  
             //on success function
             function successCallback(result){
-                console.log("success update");
+                
                 console.log(result);
             }
 
