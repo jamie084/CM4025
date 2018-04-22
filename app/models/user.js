@@ -9,7 +9,9 @@ var UserSchema   = new Schema({
 	password: { type: String, required: true, select: false },
 	icon: { type: Number},
 	user_id: { type: Number},
-	donuts: {type: Number}
+	donuts: {type: Number},
+	beers: {type: Number},
+	exp: { type: Number}
 });
 
 // hash the password before the user is saved

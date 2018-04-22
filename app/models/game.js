@@ -2,7 +2,7 @@ var mongoose     = require('mongoose');
 var Schema       = mongoose.Schema;
 var bcrypt 		 = require('bcrypt-nodejs');
 var id = mongoose.Types.ObjectId()
-mongoose.set('debug', true);
+mongoose.set('debug', false);
 
 // user schema 
 var GameSchema   = new Schema({
