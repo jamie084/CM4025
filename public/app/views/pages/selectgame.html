@@ -1,24 +1,32 @@
 <div class="jumbotron text-center">
+  <div class="row">
+    <div class="col-md-1">
+        <img class="pull-left" border="0" alt="W3Schools" src="/app/img/burns.png" width="150" height="300">
+    </div>
+    <div class="col-md-10 col-md-offset-1">
+        <h2 class="text-center"><strong>Please select a game</strong></h2>
+        <hr/>
+        <!-- display the list using ng-repeat -->
+       <h3>List of available games:</h2>
+       <table class="table table-bordered">
+        <thead>
+        <tr>
+         <td>Name of map</td>
+         <td>Number of players</td>
+         <td></td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="game in selectgame.games">
+         <td>{{ game.name }}</td>
+         <td>{{ game.players }}</td>
+        <td> <a href="/game/?_id={{game._id}}">Join the game</a></td>
+        </tr>
+        </tbody>
+       </table>
+    </div>
+  </div>
+  
 
-  <h2 class="text-center"><strong>Please select a game</strong></h2>
-  <hr/>
-  <!-- display the list using ng-repeat -->
- <h3>List of available games:</h2>
- <table class="table table-bordered">
-  <thead>
-  <tr>
-   <td>Name of map</td>
-   <td>Number of players</td>
-   <td></td>
-  </tr>
-  </thead>
-  <tbody>
-  <tr ng-repeat="game in selectgame.games">
-   <td>{{ game.name }}</td>
-   <td>{{ game.players }}</td>
-  <td> <a href="/game/?_id={{game._id}}">Join the game</a></td>
-  </tr>
-  </tbody>
- </table>
 </div>
 
