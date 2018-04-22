@@ -14,6 +14,7 @@ app.controller('ChatController', function($http, Auth, $scope){
     token =  {token: Auth.getToken()}
     //get the logged in username based on the token inforation
 
+    this.load = function(){
     $http.get('api/me', token).then(successCallback, errorCallback);	
     function successCallback(result){
 
@@ -28,7 +29,7 @@ app.controller('ChatController', function($http, Auth, $scope){
          console.log( result)
          return null;
      }
-    
+    }
      function getChatData() {
         $http.get('api/chat', token).then(successCallback, errorCallback);	
         function successCallback(result){
