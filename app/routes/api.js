@@ -122,13 +122,19 @@ module.exports = function(app, express) {
 	apiRouter.route('/chat/:chat_id')
 				// update the user with this id
 				.put(function(req, res) {
-					var chat = new Chat();
+					//var chat = new Chat();
 					Chat.findById(req.params.chat_id, function(err, chat) {
 		
 						if (err) res.send(err);
-		
+						console.log(req.body)
+						console.log(chat)
 						// set the new user information if it exists in the request
-						if (req.body) chat.messageData = req.body;
+						if (!Array.isArray(chat.messageData)) {
+							chat.messageData = [];
+						}
+						chat.messageData.push(req.body);
+						chat.markModified('messageData')	
+					//	if (req.body) chat.messageData = chat.messageData[0].push(req.body);
 						console.log("put req")
 						console.log(req.body)
 						console.log(chat.messageData)
