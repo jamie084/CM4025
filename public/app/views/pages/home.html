@@ -1,5 +1,41 @@
-    <div class="jumbotron text-center">
-        <h1>Home Page</h1>
 
-        <p>{{ home.message }}</p>
+    <div class="jumbotron text-center">
+                    <!-- Replace firefox window.onload func -->
+                    <div ng-init="home.load()"></div>
+        <h2>Select an icon</h2>
+        <hr/>
+        <div class="row">
+            <div class="col-md-2 col-md-offset-2">
+                <br/>
+                <br/>
+                    <div class="btn btn-primary btn-lg"  id="btnLeft"  style="width:120px; margin-top:30px" ng-disabled="home.isLeftDisabled" ng-click="home.left()"     >
+                            <span class="glyphicon glyphicon-arrow-left"> Previous</span>             
+                        </div> 
+            </div>
+            <div class="col-md-4">
+                    <img class="text-center" id="imgIcon" border="0" alt="" src="/app/img/homer.png" width="180" height="300">
+            </div>
+            <div class="col-md-2">
+                    <br/>
+                    <br/>
+                    <div class="btn btn-primary btn-lg"  id="btnRight" style="width:120px; margin-top:30px" ng-disabled="home.isRightDisabled" ng-click="home.right()"     >
+                            <span class="glyphicon glyphicon-arrow-right"> Next</span>             
+                    </div>   
+            </div>
+        </div>
+        <div class="row text-center">
+            <br/>
+                <div class="btn btn-primary btn-lg"  id="btnLeft"  style="width:120px; margin-top:30px"  ng-click="home.update()"     >
+                        Update            
+                    </div> 
+        </div>
+        <br/>
+        <div class="alert alert-success" runat ="server" ng-show="home.isSuccess"> 
+
+                <div class="text-center">Update successful</div>
+        </div>
+
+
     </div>
+
+
