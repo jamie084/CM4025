@@ -1,5 +1,5 @@
 // inject ngRoute for all our routing needs
-angular.module('routerRoutes', ['ngRoute', 'loginService'])
+angular.module('routerRoutes', ['ngRoute', 'loginService', 'chat'])
 
 // configure our routes
 .config(function($routeProvider, $locationProvider) {
@@ -16,10 +16,10 @@ angular.module('routerRoutes', ['ngRoute', 'loginService'])
         })
 
         // route for the about page
-        .when('/about', {
-            templateUrl : 'app/views/pages/about.html',
-            controller  : 'aboutController',
-            controllerAs: 'about',
+        .when('/chat', {
+            templateUrl : 'app/views/pages/chat.html',
+            controller  : 'ChatController',
+            controllerAs: 'chat',
             resolve: {
                 factory: checkRouting
             }
