@@ -1,93 +1,74 @@
-
 <div class="jumbotron text-center">
-
-    <h1>Hello {{ game.username }} !</h1>
-
-    <p>{{ game.message }}</p>
-    <div class="container" ng-app="routerApp" ng-controller="userController as main">
-       <P>test output {{ main.test }}</P> 
-    </div>
-    <div class="container" ng-app="routerApp" ng-controller="mainController as main">
-        <P>test output {{ main.test }}</P> 
-     </div>
-
-    <div class="container">
-
         <!-- Replace firefox window.onload func -->
         <div ng-init="game.load()"></div>
-        
+    <h2>Hello {{ game.username }} !</h3>
 
-        <div class="row">
-            <div class="form-group col-xs-4">                
-                <button id="btnStart" ng-click="game.getGame()">game test get</button> 
-                <button id="btnStart" ng-click="game.gameTest()">game test put</button>      
-                <button id="btnSpawn" ng-click="game.spawn()">Spawn </button>            
-            </div>
-            <div class="form-group col-xs-4">         
-                    <!-- <div class="col-xs-1">
-                            <img src="/app/img/homer.png" style="padding-top:55px;padding-right:10px;" id="homer" alt="Homer">
-                    </div> -->
-            </div>
-            <div class="form-group col-xs-4">  
-                            
-            </div>            
-        </div>
-        <div class="row">
-            <div class="form-group col-xs-4">
+    <!-- <p>{{ game.message }}</p> -->
 
-            </div>
-            <div class="form-group col-xs-4"> 
-                                                
-            </div>
-            <div class="form-group col-xs-4">  
-                                                                    
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-xs-2 col-xs-offset-1">
-                
-            </div>
-        </div>
+
+
+
+
+
+
+        
         <div class="row">
         
-            <div class="col-xs-3">
-                <div class="row">
-                    <div class="col-xs-4">
-                            <div class="btn btn-success btn-s"  id="btnLeft"  style="width:70px; margin-top:30px" ng-click="game.left()"     >
-                                    <span class="glyphicon glyphicon-arrow-left">Left</span>             
-                                </div>  
-                    </div>
-                    <div class="col-xs-4">
-                            <div class="btn btn-success btn-s"  id="btnForward" style="width:70px" ng-click="game.forward()"     >
-                                    <span class="glyphicon glyphicon-arrow-up">Up</span>             
-                            </div>
-        
-                            <div class="btn btn-success btn-s"  id="btnBack"  style="width:70px" ng-click="game.back()"     >
-                                    <span class="glyphicon glyphicon-arrow-down">Down</span>             
-                            </div>                            
-                    </div>
-                    <div class="col-xs-4">
-                            <div class="btn btn-success btn-s"  id="btnRight" style="width:70px; margin-top:30px" ng-click="game.right()"     >
-                                    <span class="glyphicon glyphicon-arrow-right">Right</span>             
-                            </div>                          
-                    </div>                        
-                </div>
-                <div class="row">
-                    <div class="col-xs-12">
+                <div class="col-md-3">
+                    <table class="table">
                         <br/>
-                            <p>Collected donuts: {{ game.donutMessage }}</p>
-                    </div>
+                        <tr>
+                                Your Scores:
+                        </tr>
+                        <tr>
+                            <td><img class="pull-left" border="0" alt="W3Schools" src="/app/img/donut.png" width="30" height="30"></td>
+                            <td>{{ game.donutMessage }}</td>
+                        </tr>
+                        <tr>
+                            <td><img class="pull-left" border="0" alt="W3Schools" src="/app/img/beer.png" width="30" height="30"></td>
+                            <td>{{ game.beerMessage }}</td>
+                        </tr>
+                        <tr>
+                            <td><img class="pull-left" border="0" alt="W3Schools" src="/app/img/exp.png" width="30" height="30"></td>
+                            <td>{{ game.expMessage }}</td>
+                        </tr>
+                    </table>
+                    <hr/>
+                    <div class="row">
+                    
+                                 
+                                        <div class="col-xs-4">
+                                                <div class="btn btn-success btn-s"  id="btnLeft"  style="width:70px; margin-top:30px" ng-click="game.left()"     >
+                                                        <span class="glyphicon glyphicon-arrow-left">Left</span>             
+                                                    </div>  
+                                        </div>
+                                        <div class="col-xs-4">
+                                                <div class="btn btn-success btn-s"  id="btnForward" style="width:70px" ng-click="game.forward()"     >
+                                                        <span class="glyphicon glyphicon-arrow-up">Up</span>             
+                                                </div>
+                            
+                                                <div class="btn btn-success btn-s"  id="btnBack"  style="width:70px" ng-click="game.back()"     >
+                                                        <span class="glyphicon glyphicon-arrow-down">Down</span>             
+                                                </div>                            
+                                        </div>
+                                        <div class="col-xs-4">
+                                                <div class="btn btn-success btn-s"  id="btnRight" style="width:70px; margin-top:30px" ng-click="game.right()"     >
+                                                        <span class="glyphicon glyphicon-arrow-right">Right</span>             
+                                                </div>                          
+                                        </div>                        
+                               
+                                
+                     </div>
                 </div>
-            </div>
 
 
-            <div class="col-xs-9">
-                <canvas id="myCanvas" width=700 height=500 style="border: 1px gray solid;"></canvas>
+            <div class="col-md-9">
+                <canvas id="myCanvas" width=800 height=640 style="border: 1px gray solid;"></canvas>
             </div>
 
         </div>
         <br/>
-    </div>
+
 </div>
 <!-- Modal -->
 <div class="modal fade" id="myModal" role="dialog">
@@ -97,11 +78,31 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Modal Header</h4>
+        <h4 class="modal-title">You've found a treasure box</h4>
       </div>
       <div class="modal-body">
-          <label id="treasure" name="treasure" value="">
-        <p>Some text in the modal.</p>
+            <!-- <label id="treasure" name="treasure" value="" ng-show="game.isTreasureToShow"></label> -->
+        <div class="row">
+            <div class="col-md-5">
+                    <br/>
+                    <h4>
+                        <label id="lblBeer"name="beer" value="" ng-show="game.isBeerToShow"></label> 
+                        <label id="lblDonut"name="donut" value="" ng-show="game.isDonutToShow"></label> 
+                        <label id="lblExp" name="exp" value="" ng-show="game.isExpToShow"></label>
+                    </h4>
+            </div>
+            <div class="col-md-7">
+                    <div class="text-center">
+                            <img class="pull-left" border="0" alt="W3Schools" src="/app/img/beer.png" width="80" height="80" ng-show="game.isBeerToShow">           
+                            <img class="pull-left" border="0" alt="W3Schools" src="/app/img/donut.png" width="80" height="80" ng-show="game.isDonutToShow">            
+                            <img class="pull-left" border="0" alt="W3Schools" src="/app/img/exp.png" width="80" height="80" ng-show="game.isExpToShow">
+                        </div>
+            </div>
+        </div>
+
+
+
+
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -111,5 +112,8 @@
   </div>
 </div>
 
-
+<div class="form-group col-xs-4">                
+        <button id="btnStart" ng-click="game.gameTest()">game test put</button>      
+        <button id="btnSpawn" ng-click="game.spawn()">Spawn </button>            
+    </div>
 
