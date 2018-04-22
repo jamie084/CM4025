@@ -1,10 +1,9 @@
 
 <div class="jumbotron text-center">
 
-    <h1>Game Page</h1>
+    <h1>Hello {{ game.username }} !</h1>
 
     <p>{{ game.message }}</p>
-    <p>{{ game.donutCounter }}</p>
     <div class="container" ng-app="routerApp" ng-controller="userController as main">
        <P>test output {{ main.test }}</P> 
     </div>
@@ -21,7 +20,8 @@
         <div class="row">
             <div class="form-group col-xs-4">                
                 <button id="btnStart" ng-click="game.getGame()">game test get</button> 
-                <button id="btnStart" ng-click="game.gameTest()">game test put</button>                  
+                <button id="btnStart" ng-click="game.gameTest()">game test put</button>      
+                <button id="btnSpawn" ng-click="game.spawn()">Spawn </button>            
             </div>
             <div class="form-group col-xs-4">         
                     <!-- <div class="col-xs-1">
