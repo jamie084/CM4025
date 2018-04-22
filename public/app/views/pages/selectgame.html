@@ -1,9 +1,9 @@
 <div class="jumbotron text-center">
 
-    {{ selectgame.message }}
-
-     <!-- display the list using ng-repeat -->
- <h2>List of available games:</h2>
+  <h2 class="text-center"><strong>Please select a game</strong></h2>
+  <hr/>
+  <!-- display the list using ng-repeat -->
+ <h3>List of available games:</h2>
  <table class="table table-bordered">
   <thead>
   <tr>
@@ -22,20 +22,3 @@
  </table>
 </div>
 
- <div ng-controller="ChatController as chatController">
-    <div>
-      <div>
-        <div ng-repeat="message in chatController.messages">{{message.from}}: {{message.text}}</div>
-      </div>
-      <div>
-        <input type="text" placeholder="type your message" ng-model="chatController.newMessage">
-        <button ng-click="chatController.sendMessage(chatController.newMessage)">send</button>
-      </div>
-      
-      <select ng-model="chatController.sendAs">
-        <option default value="Alice">Send as Alice</option>
-        <option value="Bob">Send as Bob</option>
-      </select>
-      
-    </div>
-  </div>
