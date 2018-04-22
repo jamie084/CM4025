@@ -21,8 +21,8 @@ angular.module('loginService', ['authService', 'userService'])
 			
 			// promise object
 			.success(function(data) {
-				console.log(Auth.getToken())
-				console.log("username ass " + vm.credentials.username)
+		//		console.log(Auth.getToken())
+			//	console.log("username ass " + vm.credentials.username)
 				
 				if (Auth.isLoggedIn()){
 					window.location.href = '/';
@@ -54,7 +54,7 @@ angular.module('loginService', ['authService', 'userService'])
 	var vm = this;	
 	//controls the bootsrap error panel
 	vm.error = false;
-	vm.credentials = { username: '', password: '', icon: 1, user_id: ''};
+	vm.credentials = { username: '', password: '', icon: 1, user_id: '', beers: 0, donuts: 0, exp: 0};
 	
 //	$scope.firstName = vm.credentials.username;
 
